@@ -1,99 +1,75 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
-import Button from '@mui/material/Button';
-import Avatar from '@mui/material/Avatar';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import DialogTitle from '@mui/material/DialogTitle';
-import Dialog from '@mui/material/Dialog';
-import PersonIcon from '@mui/icons-material/Person';
-import AddIcon from '@mui/icons-material/Add';
-import Typography from '@mui/material/Typography';
-import { blue } from '@mui/material/colors';
+import { useContext, useState } from "react";
+import { Context } from "../../context";
+import { addMovie } from "../../unitils/movie";
 
-const emails = ['username@gmail.com', 'user02@gmail.com'];
+export default function MovieForm() {
+    const { dispatch } = useContext(Context);
 
-function SimpleDialog(props) {
-  const { onClose, selectedValue, open } = props;
+    const [formData, setFormData] = useState({
+        title: "",
+        thumbnailUrl: ""
+    });
 
-  const handleClose = () => {
-    onClose(selectedValue);
-  };
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        addMovie(dispatch, formData); 
+        setFormData({ title: "", thumbnailUrl: "" });
+    };
 
-  const handleListItemClick = (value) => {
-    onClose(value);
-  };
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value
+        }));
+    };
 
-  return (
-    <Dialog onClose={handleClose} open={open}>
-      <DialogTitle>Set backup account</DialogTitle>
-      <List sx={{ pt: 0 }}>
-        {emails.map((email) => (
-          <ListItem disablePadding key={email}>
-            <ListItemButton onClick={() => handleListItemClick(email)}>
-              <ListItemAvatar>
-                <Avatar sx={{ bgcolor: blue[100], color: blue[600] }}>
-                  <PersonIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary={email} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-        <ListItem disablePadding>
-          <ListItemButton
-            autoFocus
-            onClick={() => handleListItemClick('addAccount')}
-          >
-            <ListItemAvatar>
-              <Avatar>
-                <AddIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Add account" />
-          </ListItemButton>
-        </ListItem>
-      </List>
-    </Dialog>
-  );
-}
+    return (
+        <>
+            <div
+                className="mx-auto block max-w-md rounded-lg bg-white p-6 shadow-4 dark:bg-surface-dark">
+                <form onSubmit={handleSubmit}>
+                    <div className="relative mb-6" >
+                        <input
+                            type="text"
+                            className="peer block min-h-[auto] w-full rounded border-2 bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[twe-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-blue-500 dark:placeholder:text-neutral-300 dark:autofill:shadow-autofill dark:peer-focus:text-primary [&:not([data-twe-input-placeholder-active])]:placeholder:opacity-0"
+                            id="exampleInput7"
+                            placeholder="Name"
+                            name="title"
+                            value={formData.title}
+                            onChange={handleChange}
+                        />
+                        <label
+                            for="exampleInput7"
+                            className="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[twe-input-state-active]:-translate-y-[0.9rem] peer-data-[twe-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-300 dark:peer-focus:text-primary"
 
-SimpleDialog.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  open: PropTypes.bool.isRequired,
-  selectedValue: PropTypes.string.isRequired,
-};
+                        >Title
+                        </label>
+                    </div>
+                    <div className="relative mb-6" >
+                        <input
+                            type="text"
+                            className="peer block min-h-[auto] w-full rounded border-2 bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[twe-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-blue-500 dark:placeholder:text-neutral-300 dark:autofill:shadow-autofill dark:peer-focus:text-primary [&:not([data-twe-input-placeholder-active])]:placeholder:opacity-0"
+                            id="exampleInput8"
+                            placeholder="Title"
+                            name="thumbnailUrl"
+                            value={formData.thumbnailUrl}
+                            onChange={handleChange}
+                        />
+                        <label
+                            for="exampleInput8"
+                            className="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[twe-input-state-active]:-translate-y-[0.9rem] peer-data-[twe-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-300 dark:peer-focus:text-primary"
+                        >Image Url
+                        </label>
+                    </div>
+                    <button
+                        type="submit"
+                        className="w-full bg-blue-500 rounded-lg text-white p-2">
+                        Send
+                    </button>
+                </form>
+            </div>
 
-export default function SimpleDialogDemo() {
-  const [open, setOpen] = React.useState(false);
-  const [selectedValue, setSelectedValue] = React.useState(emails[1]);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = (value) => {
-    setOpen(false);
-    setSelectedValue(value);
-  };
-
-  return (
-    <div>
-      <Typography variant="subtitle1" component="div">
-        Selected: {selectedValue}
-      </Typography>
-      <br />
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Open simple dialog
-      </Button>
-      <SimpleDialog
-        selectedValue={selectedValue}
-        open={open}
-        onClose={handleClose}
-      />
-    </div>
-  );
+        </>
+    )
 }
